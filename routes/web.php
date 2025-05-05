@@ -10,7 +10,7 @@ use App\Http\Controllers\VoteController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckAdmin;
-
+use App\Http\Controllers\ArchivesController;
 Route::get('/', function () {
     return redirect('/login');
 });
@@ -25,28 +25,24 @@ Route::middleware('auth',)->group(function () {
             return view('admin.dashboard');
         })->name('admin.dashboard');
 
-        // Admin routes
-        Route::resource('elections', ElectionController::class);
+    
+        
         Route::resource('nominees', NomineeController::class);
         Route::resource('positions', PositionController::class);
         Route::resource('users', UserController::class);
         Route::resource('watchers', WatcherController::class);
+        Route::resource('archives', ArchivesController::class);
         Route::resource('votes', VoteController::class);
-        Route::resource('elections', ElectionController::class);
         Route::post('/elections/{election}/add-position', [ElectionController::class, 'addPosition'])->name('elections.add_position');
         Route::delete('/elections/{election}/delete-position', [ElectionController::class, 'deletePosition'])->name('elections.delete_position');
         Route::put('/elections/{election}/edit-position', [ElectionController::class, 'editPosition'])->name('elections.edit_position');
+        
+        Route::resource('elections', ElectionController::class);
     });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Election routes
-    
-    // Nominee routes
-  
-
-    // Student routes
+   
     Route::get('/student', [StudentController::class, 'index'])->name('student.index');
     Route::get('/student/vote', [StudentController::class, 'vote'])->name('student.vote');
     Route::get('/student/nominate', [StudentController::class, 'nominate'])->name('student.nominate');

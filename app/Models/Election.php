@@ -16,6 +16,7 @@ class Election extends Model
         'voting_end',
         'election_start',
         'election_end',
+        'is_archived',
     ];
 
     public function positions()

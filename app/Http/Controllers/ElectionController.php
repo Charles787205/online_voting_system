@@ -13,7 +13,7 @@ class ElectionController extends Controller
      */
     public function index()
     {
-        $elections = Election::all(['id', 'name', 'voting_start', 'voting_end', 'election_start', 'election_end']);
+        $elections = Election::all(['id', 'name', 'voting_start', 'voting_end', 'election_start', 'election_end'])->except('is_archived');
         return view('elections.index', compact('elections'));
     }
 
@@ -72,7 +72,9 @@ class ElectionController extends Controller
             'election_start' => 'required|date',
             'election_end' => 'required|date|after:election_start',
         ]);
-
+        if($election->is_archived){
+            return redirect()->route('elections.index')->withErrors(['error' => 'Election is archived and cannot be updated']);
+        }
         $election->update($validated);
 
         return redirect()->route('elections.index')->with('success', 'Election updated successfully.');
@@ -83,9 +85,24 @@ class ElectionController extends Controller
      */
     public function destroy(Election $election)
     {
-        $election->delete();
+        $election->update(['is_archived' => true]);
 
-        return redirect()->route('elections.index')->with('success', 'Election deleted successfully.');
+        return redirect()->route('elections.index')->with('success', 'Election archived successfully.');
+    }
+
+    /**
+     * Display a listing of archived elections.
+     */
+    public function archives()
+    {
+        $archivedElections = Election::where('is_archived', true)->get();
+        return view('elections.archives', compact('archivedElections'));
+    }
+
+    public function showArchived()
+    {
+        $archivedElections = Election::where('is_archived', true)->get();
+        return view('elections.get_archives', compact('archivedElections'));
     }
 
     /**

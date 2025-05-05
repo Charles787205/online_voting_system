@@ -59,6 +59,15 @@
         <span><i class="fa fa-angle-right float-right"></i></span>
       </a>
     </li>
+    <li
+      class="w-full h-full py-3 px-2 border-b border-light-border {{ request()->routeIs('archives.index') ? 'bg-white' : '' }}">
+      <a href="{{ route('archives.index') }}"
+        class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline">
+        <i class="fas fa-archive float-left mx-2"></i>
+        Archives
+        <span><i class="fa fa-angle-right float-right"></i></span>
+      </a>
+    </li>
     @else
     <li
       class="w-full h-full py-3 px-2 border-b border-light-border {{ request()->routeIs('student.elections') ? 'bg-white' : '' }}">
