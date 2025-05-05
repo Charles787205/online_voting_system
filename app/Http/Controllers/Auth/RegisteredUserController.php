@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\StudentDetail;
 
 class RegisteredUserController extends Controller
 {
@@ -29,19 +30,40 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'type' => 'required|in:professor,student',
+            'id_number' => 'required_if:type,student|string|unique:student_details,id_number',
+            'year' => 'required_if:type,student|string',
+            'course' => 'required_if:type,student|string',
         ]);
+
+        $validated['password'] = bcrypt($validated['password']);
+
+        if (User::count() === 0) {
+            $validated['is_admin'] = true;
+        } else {
+            $validated['is_admin'] = false;
+        }
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'type' => $validated['type'],
+            'is_admin' => $validated['is_admin'],
         ]);
 
-        event(new Registered($user));
+        if ($validated['type'] === 'student') {
+            StudentDetail::create([
+                'user_id' => $user->id,
+                'id_number' => $validated['id_number'],
+                'year' => $validated['year'],
+                'course' => $validated['course'],
+            ]);
+        }
 
         Auth::login($user);
 

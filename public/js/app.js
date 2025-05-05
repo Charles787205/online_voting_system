@@ -8,3 +8,6 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
+export function toggleProfileDropdown() {
+    document.getElementById('profileDropdown').classList.toggle('hidden');
+}

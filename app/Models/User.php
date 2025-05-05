@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'type', // Added type to indicate if the user is a student or professor
+        'is_admin'
     ];
 
     /**
