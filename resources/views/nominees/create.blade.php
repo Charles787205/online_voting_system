@@ -9,7 +9,7 @@
                 Add Nominee
               </div>
               <div class="p-3">
-                <form action="{{ route('nominees.store') }}" method="POST">
+                <form action="{{ route('nominees.store') }}" method="POST" enctype="multipart/form-data">
                   @csrf
                   <div class="mb-4">
                     <label for="election_id" class="block text-gray-700 text-sm font-bold mb-2">Select Election</label>
@@ -35,6 +35,11 @@
                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                       <option value="">Select Position</option>
                     </select>
+                  </div>
+                  <div class="mb-4">
+                    <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Upload Image</label>
+                    <input type="file" name="image_url" id="image_url"
+                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                   </div>
                   <div class="mt-5">
                     <button type="submit"

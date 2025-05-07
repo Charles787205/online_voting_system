@@ -11,15 +11,31 @@ use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckAdmin;
 use App\Http\Controllers\ArchivesController;
+use App\Http\Controllers\UserWatcher;
+use App\Http\Middleware\CheckIfWatcher;
 Route::get('/', function () {
     return redirect('/login');
 });
 
 Route::get('/dashboard', function () {
+    $user = auth()->user();
+    
+    // Check if user is a watcher
+    $isWatcher = \App\Models\Watcher::where('user_id', $user->id)->exists() || 
+                 ($user->type === 'professor');
+                 
+    if ($isWatcher) {
+        return redirect()->route('userwatchers.index');
+    }
+    
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth',)->group(function () {
+
+    Route::resource('userwatchers', UserWatcher::class);
+    Route::get('/election/{id}/votes', [UserWatcher::class, 'getVoteCounts'])->name('election.votes');
+
     Route::middleware(CheckAdmin::class)->group(function () {
         Route::get('/admin', function () {
             return view('admin.dashboard');
@@ -39,6 +55,7 @@ Route::middleware('auth',)->group(function () {
         
         Route::resource('elections', ElectionController::class);
     });
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

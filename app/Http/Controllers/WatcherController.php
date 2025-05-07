@@ -17,7 +17,7 @@ class WatcherController extends Controller
 
     public function create()
     {
-        $users = User::all();
+        $users = User::where('is_admin', false)->get();
         $elections = Election::all();
         $nominees = Nominee::all();
 

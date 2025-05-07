@@ -12,6 +12,7 @@ class Nominee extends Model
     protected $fillable = [
         'student_id',
         'election_position_id',
+        'image_url',
     ];
 
     public function student()

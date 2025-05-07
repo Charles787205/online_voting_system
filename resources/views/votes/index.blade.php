@@ -16,6 +16,7 @@
                       <th class="px-4 py-2">Election Name</th>
                       <th class="px-4 py-2">Voting Start</th>
                       <th class="px-4 py-2">Voting End</th>
+                      <th class="px-4 py-2">Status</th>
                       <th class="px-4 py-2">Action</th>
                     </tr>
                   </thead>
@@ -27,8 +28,24 @@
                       <td class="border px-4 py-2">{{ $election->voting_start }}</td>
                       <td class="border px-4 py-2">{{ $election->voting_end }}</td>
                       <td class="border px-4 py-2">
+                        @if(in_array($election->id, $votedElectionIds))
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Already
+                          Voted</span>
+                        @else
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Not
+                          Voted</span>
+                        @endif
+                      </td>
+                      <td class="border px-4 py-2">
+                        @if(in_array($election->id, $votedElectionIds))
+                        <button class="bg-gray-400 text-white font-bold py-2 px-4 rounded cursor-not-allowed opacity-50"
+                          disabled>
+                          View
+                        </button>
+                        @else
                         <a href="{{ route('votes.show', $election->id) }}"
                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View</a>
+                        @endif
                       </td>
                     </tr>
                     @endforeach

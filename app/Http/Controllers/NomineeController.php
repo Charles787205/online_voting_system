@@ -29,11 +29,22 @@ class NomineeController extends Controller
             'student_id' => 'required|exists:student_details,id_number',
             'election_id' => 'required|exists:elections,id',
             'position_id' => 'required|exists:positions,id',
+            'image_url' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('image_url')) {
+            $imagePath = $request->file('image_url')->store('images', 'public');
+            $validated['image_url'] = $imagePath;
+        }
+
         $electionPosition = ElectionPosition::get()->where('election_id', $validated['election_id'])->where('position_id', $validated['position_id'])->first();
         $validated['election_positions_id'] = $electionPosition->id;
 
-        Nominee::create($validated);
+        Nominee::create([
+            'student_id' => $validated['student_id'],
+            'election_position_id' => $validated['election_positions_id'],
+            'image_url' => $validated['image_url'] ?? null,
+        ]);
 
         return redirect()->route('nominees.index')->with('success', 'Nominee added successfully.');
     }
@@ -45,15 +56,23 @@ class NomineeController extends Controller
 
     public function edit(Nominee $nominee)
     {
-        return view('nominees.edit', compact('nominee'));
+        $students = StudentDetail::all();
+        $elections = Election::with('positions')->get();
+        $positions = ElectionPosition::where('election_id', $nominee->electionPosition->election_id)->get();
+        return view('nominees.edit', compact('nominee', 'students', 'elections', 'positions'));
     }
 
     public function update(Request $request, Nominee $nominee)
     {
         $validated = $request->validate([
             'student_id' => 'required|exists:student_details,id_number',
-            'election_positions_id' => 'required|exists:election_positions,id',
+            'image_url' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('image_url')) {
+            $imagePath = $request->file('image_url')->store('images', 'public');
+            $validated['image_url'] = $imagePath;
+        }
 
         $nominee->update($validated);
 

@@ -14,6 +14,7 @@
                 <table class="table-fixed w-full mt-4">
                   <thead>
                     <tr>
+                      <th class="border w-1/6 px-4 py-2">Image</th>
                       <th class="border w-1/3 px-4 py-2">Student</th>
                       <th class="border w-1/3 px-4 py-2">Position</th>
                       <th class="border w-1/3 px-4 py-2">Actions</th>
@@ -22,6 +23,10 @@
                   <tbody>
                     @foreach ($nominees as $nominee)
                     <tr>
+                      <td class="border px-4 py-2">
+                        <img src="{{ Storage::url($nominee->image_url) }}" alt="Nominee Image"
+                          class="w-10 h-10 rounded-full">
+                      </td>
                       <td class="border px-4 py-2">{{ $nominee->student->user->name }}</td>
                       <td class="border px-4 py-2">{{ $nominee->electionPosition->position->name }}</td>
                       <td class="border px-4 py-2">
