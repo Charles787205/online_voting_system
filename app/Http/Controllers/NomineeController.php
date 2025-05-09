@@ -17,7 +17,9 @@ class NomineeController extends Controller
 
     public function create()
     {
-        $students = StudentDetail::all();
+        $students = StudentDetail::whereHas('user', function ($query) {
+            $query->where('is_admin', false);
+        })->get();
         
         $elections = Election::with('positions')->get();
         return view('nominees.create', compact('students', 'elections'));
@@ -67,6 +69,7 @@ class NomineeController extends Controller
         $validated = $request->validate([
             'student_id' => 'required|exists:student_details,id_number',
             'image_url' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
+            'position_id' => 'required|exists:positions,id',
         ]);
 
         if ($request->hasFile('image_url')) {

@@ -52,7 +52,8 @@
                       <option value="">Select Position</option>
                       @foreach ($positions as $position)
                       <option value="{{ $position->id }}"
-                        {{ $nominee->position_id == $position->id ? 'selected' : '' }}>{{ $position->name }}</option>
+                        {{ $nominee->position_id == $position->id ? 'selected' : '' }}>{{ $position->position->name }}
+                      </option>
                       @endforeach
                     </select>
                   </div>

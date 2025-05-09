@@ -13,7 +13,9 @@ class ElectionController extends Controller
      */
     public function index()
     {
-        $elections = Election::all(['id', 'name', 'voting_start', 'voting_end', 'election_start', 'election_end'])->except('is_archived');
+        $elections = Election::where('is_archived', false)
+                            ->select(['id', 'name', 'voting_start', 'voting_end', 'election_start', 'election_end'])
+                            ->get();
         return view('elections.index', compact('elections'));
     }
 
