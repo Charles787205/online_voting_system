@@ -69,7 +69,7 @@ class NomineeController extends Controller
         $validated = $request->validate([
             'student_id' => 'required|exists:student_details,id_number',
             'image_url' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
-            'position_id' => 'required|exists:positions,id',
+            'election_position_id' => 'required|exists:election_positions,id',
         ]);
 
         if ($request->hasFile('image_url')) {

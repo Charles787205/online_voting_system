@@ -24,7 +24,7 @@ class CheckIfWatcher
             return redirect()->route('login')->with('error', 'You must be logged in to access this resource.');
         }
 
-        $isWatcher = Watcher::where('user_id', $user->id)->exists();
+        $isWatcher = Watcher::where('user_id', $user->id)->exists() || User::where('type', 'professor')->where('id', $user->id)->exists();
 
         if (!$isWatcher) {
             return redirect()->route('home')->with('error', 'Access denied. You are not a watcher.');
