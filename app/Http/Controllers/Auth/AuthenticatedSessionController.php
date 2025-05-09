@@ -28,6 +28,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Check user type and redirect accordingly
+        
+        // Default redirect for other user types
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

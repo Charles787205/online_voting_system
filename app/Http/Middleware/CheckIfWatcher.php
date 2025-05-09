@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\Watcher;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class CheckIfWatcher
@@ -25,9 +26,16 @@ class CheckIfWatcher
         }
 
         $isWatcher = Watcher::where('user_id', $user->id)->exists() || User::where('type', 'professor')->where('id', $user->id)->exists();
-
+        
         if (!$isWatcher) {
-            return redirect()->route('home')->with('error', 'Access denied. You are not a watcher.');
+            // Redirect based on user type
+            if ($user->is_admin) {
+                return redirect()->to('/elections');
+            } elseif ($user->type === 'student') {
+                return redirect()->to('/student/elections');
+            } else {
+                return redirect()->route('/');
+            }
         }
 
         return $next($request);

@@ -50,6 +50,11 @@ class ElectionController extends Controller
      */
     public function show(Election $election)
     {
+        // Check if election has ended and redirect to results page
+        if (now() > $election->election_end) {
+            return view('elections.results', compact('election'));
+        }
+        
         $availablePositions = Position::all();
         return view('elections.show', compact('election', 'availablePositions'));
     }

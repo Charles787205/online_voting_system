@@ -33,6 +33,11 @@ class Election extends Model
         return $this->hasManyThrough(Nominee::class, ElectionPosition::class);
     }
 
+    public function getFormattedElectionStartAttribute()
+    {
+        return Carbon::parse($this->attributes['election_start'])->format('F j, Y g:i A');
+    }
+
     public function getFormattedVotingStartAttribute()
     {
         return Carbon::parse($this->attributes['voting_start'])->format('F j, Y g:i A');
